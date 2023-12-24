@@ -21,17 +21,14 @@
 #' @param n.cores Number of cores for parallel computing.
 #'
 #' @return A list. containing predicted object, cancer object and normal object.
-#' @export
+#' @import copykt
 #'
 #' @examples
 #' \dontrun{test <- Copykat(obj,cancer = "colon cancer",n_PC = 10,id.type="S", ngene.chr=5, win.size=25, KS.cut=0.1, sam.name="GSM7058756_C1", distance="euclidean", norm.cell.names="")}
 Copykat <- function(obj,cancer="cancer",n_PC=10,id.type = "S",cell.line = "no",ngene.chr = 5,LOW.DR = 0.05,UP.DR = 0.1,
                     win.size = 25,norm.cell.names = "",KS.cut = 0.1,sam.name = "",distance = "euclidean",output.seg = "FALSE",plot.genes = "TRUE",genome = "hg20",n.cores = 1){
   obj_list <- list()
-  if (!requireNamespace("copykat",quietly = TRUE)) {
-    devtools::install_github("navinlabcode/copykat")
-  }
-  library(copykat)
+
   exp.rawdata <- as.matrix(obj@assays$Spatial@counts)
   copykat.test <- copykat::copykat(rawmat=exp.rawdata, id.type=id.type, cell.line = cell.line, ngene.chr = ngene.chr, LOW.DR = LOW.DR, UP.DR = UP.DR, win.size =win.size,
                           norm.cell.names =norm.cell.names, KS.cut = KS.cut, sam.name = sam.name, distance = distance, output.seg = output.seg, plot.genes = plot.genes, genome = genome, n.cores = n.cores)
