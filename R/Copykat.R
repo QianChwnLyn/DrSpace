@@ -41,7 +41,7 @@ Copykat <- function(obj,cancer="cancer",n_PC=10,id.type = "S",cell.line = "no",n
   obj$type <- "Normal"
   obj$type[which(obj$copykat.pred == "aneuploid")] <- cancer
   obj$type <- factor(obj$type,levels = c(cancer,"Normal"))
-  Idents(obj) <- obj$type
+  Seurat::Idents(obj) <- obj$type
   obj_list[["obj"]] <- obj
   ###subset normal
   normal <- subset(obj,type=="Normal")
