@@ -21,7 +21,7 @@
 #' @param n.cores Number of cores for parallel computing.
 #'
 #' @return A list. containing predicted object, cancer object and normal object.
-#' @import copykt
+#' @import copykat
 #'
 #' @examples
 #' \dontrun{test <- Copykat(obj,cancer = "colon cancer",n_PC = 10,id.type="S", ngene.chr=5, win.size=25, KS.cut=0.1, sam.name="GSM7058756_C1", distance="euclidean", norm.cell.names="")}
