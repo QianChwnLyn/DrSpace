@@ -12,3 +12,7 @@ RoxygenNote: 7.2.2
 Depends: 
     R (>= 2.10)
 LazyData: true
+Imports:
+    copykat (>= 1.1.0),
+    CellChat (>= 2.1.1)
+
