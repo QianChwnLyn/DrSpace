@@ -89,7 +89,6 @@ SSC <- function(obj,json_path,spot.size=65){
                               edge.width.max = 2, alpha.image = 0.5, vertex.weight = "incoming", vertex.size.max = 3.5, vertex.label.cex = 3.5)
     print(p2)
     dev.off()
-    return(cellchat)
   }
-
+  return(cellchat)
 }
