@@ -25,7 +25,7 @@ if (!requireNamespace("CellChat", quietly = TRUE)) {
 
 ## Example
 
-示例数据可以在这里下载https://github.com/QianChwnLyn/DrSpace/tree/main/data。确保空转数据的images以及clusters的完成。
+示例数据可以在这里下载[数据](https://github.com/QianChwnLyn/DrSpace/tree/main/data)。确保空转数据的images以及clusters的完成。
 
 ``` r
 library(DrSpace)
@@ -69,6 +69,7 @@ CellChat::netVisual_aggregate(cellchat, signaling = pathways.show, layout = "spa
 
 ## References
 1.Gao, R Jin et al., Delineating copy number and clonal substructure in human tumors from single-cell transcriptomes. Nat Biotechnol. doi:10.1038/s41587-020-00795-2.
+
 2.Suoqin Jin et al., CellChat for systematic analysis of cell-cell communication from single-cell and spatially resolved transcriptomics, bioRxiv 2023
 
 
