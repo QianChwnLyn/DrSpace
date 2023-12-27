@@ -74,8 +74,7 @@ ssc_pre <- SSC(anno_obj,json_path = "../data/spatial/scalefactors_json.json")
 pathways.show <- “IL6”
 CellChat::netVisual_aggregate(cellchat, signaling = pathways.show, layout = "circle")
 CellChat::netVisual_aggregate(cellchat, signaling = pathways.show, layout = "spatial", edge.width.max = 2, vertex.size.max = 1, alpha.image = 0.2, vertex.label.cex = 3.5)
-CellChat::netVisual_aggregate(cellchat, signaling = pathways.show, layout = "spatial",edge.width.max = 2, alpha.image = 0.5, vertex.weight = "outgoing", vertex.size.max = 3.5, vertex.label.cex = 3.5)
-CellChat::netVisual_aggregate(cellchat, signaling = pathways.show, layout = "spatial",edge.width.max = 2, alpha.image = 0.5, vertex.weight = "incoming", vertex.size.max = 3.5, vertex.label.cex = 3.5)
+CellChat::netAnalysis_signalingRole_network(cellchat, signaling = pathways.show, width = 8, height = 2.5, font.size = 10)
 ```
 
 #### Reference
