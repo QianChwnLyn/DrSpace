@@ -2,7 +2,7 @@
 #'
 #' Predicting cell types in tumor regions from spatial transcriptomic data.
 #'
-#' @param HallMakrer Gene markers for cancer spots.
+#' @param HallMarker Gene markers for cancer spots.
 #' @param test_gene Top_gene lists.
 #' @param population_size Number of genes in the species studied.
 #' @param method Statistical methods for p-value correction. c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
@@ -11,9 +11,9 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{pred <- SSEA_score_cancer(HallMakrer,test_gene,20000)}
-SSEA_score_cancer <- function(HallMakrer,test_gene,population_size,method="BH"){
-  colnames(HallMakrer) <- c("ref_type","makrer")
+#' \dontrun{pred <- SSEA_score_cancer(HallMarker,test_gene,20000)}
+SSEA_score_cancer <- function(HallMarker,test_gene,population_size,method="BH"){
+  colnames(HallMarker) <- c("ref_type","makrer")
   SSEA_list <- list()
   result_df <- c()
   #result_type <- c()
@@ -24,10 +24,10 @@ SSEA_score_cancer <- function(HallMakrer,test_gene,population_size,method="BH"){
       p_stat <- c()
       DEGMarkers_sub <- as.data.frame(DEGMarkers[,clu])
       size_B <- dim(DEGMarkers_sub)[1]
-      for (ref in unique(HallMakrer$ref_type)) {
-        HallMakrer_sub <- subset(HallMakrer,ref_type == ref)
-        size_A <- dim(HallMakrer_sub)[1]
-        size_C <- length(intersect(DEGMarkers_sub[,1],HallMakrer_sub$makrer))
+      for (ref in unique(HallMarker$ref_type)) {
+        HallMarker_sub <- subset(HallMarker,ref_type == ref)
+        size_A <- dim(HallMarker_sub)[1]
+        size_C <- length(intersect(DEGMarkers_sub[,1],HallMarker_sub$makrer))
         p_value=phyper(size_C-1, size_A, population_size-size_A, size_B, lower.tail=F)
         stat <- data.frame(test=colnames(DEGMarkers)[clu],ref=ref,intersect_num=size_C,p_val=p_value)
         p_stat <- rbind(p_stat,stat)
