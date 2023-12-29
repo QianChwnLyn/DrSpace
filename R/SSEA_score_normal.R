@@ -2,7 +2,7 @@
 #'
 #'Predicting cell types in normal regions from spatial transcriptomic data.
 #'
-#' @param HallMakrer Gene markers for normal spots.
+#' @param HallMarker Gene markers for normal spots.
 #' @param test_gene Top_gene lists.
 #' @param population_size Number of genes in the species studied.
 #' @param method Statistical methods for p-value correction. c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
@@ -11,16 +11,16 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{pred <- SSEA_score_normal(HallMakrer,test_gene,20000)}
-SSEA_score_normal <- function(HallMakrer,test_gene,population_size,method="BH"){
-  colnames(HallMakrer) <- c("ref_type1","ref_type2","makrer")
+#' \dontrun{pred <- SSEA_score_normal(HallMarker,test_gene,20000)}
+SSEA_score_normal <- function(HallMarker,test_gene,population_size,method="BH"){
+  colnames(HallMarker) <- c("ref_type1","ref_type2","makrer")
   SSEA_list <- list()
 
   ####CT1 anno
   result_df <- c()
-  HallMakrer1 <- unique(HallMakrer[,c("ref_type1","makrer")])
-  gene_stat <- data.frame(table(HallMakrer1$ref_type1))
-  HallMakrer1 <- subset(HallMakrer1,ref_type1 %in% gene_stat$Var1[which(gene_stat$Freq >5 )])
+  HallMarker1 <- unique(HallMarker[,c("ref_type1","makrer")])
+  gene_stat <- data.frame(table(HallMarker1$ref_type1))
+  HallMarker1 <- subset(HallMarker1,ref_type1 %in% gene_stat$Var1[which(gene_stat$Freq >5 )])
 
   for (len in 1:length(test_gene)) {
     DEGMarkers <- test_gene[[len]]
@@ -29,10 +29,10 @@ SSEA_score_normal <- function(HallMakrer,test_gene,population_size,method="BH"){
       p_stat <- c()
       DEGMarkers_sub <- as.data.frame(DEGMarkers[,clu])
       size_B <- dim(DEGMarkers_sub)[1]
-      for (ref in unique(HallMakrer1$ref_type1)) {
-        HallMakrer_sub <- subset(HallMakrer1,ref_type1 == ref)
-        size_A <- dim(HallMakrer_sub)[1]
-        size_C <- length(intersect(DEGMarkers_sub[,1],HallMakrer_sub$makrer))
+      for (ref in unique(HallMarker1$ref_type1)) {
+        HallMarker_sub <- subset(HallMarker1,ref_type1 == ref)
+        size_A <- dim(HallMarker_sub)[1]
+        size_C <- length(intersect(DEGMarkers_sub[,1],HallMarker_sub$makrer))
         p_value=phyper(size_C-1, size_A, population_size-size_A, size_B, lower.tail=F)
         stat <- data.frame(test=colnames(DEGMarkers)[clu],ref=ref,intersect_num=size_C,p_val=p_value)
         p_stat <- rbind(p_stat,stat)
@@ -91,12 +91,12 @@ SSEA_score_normal <- function(HallMakrer,test_gene,population_size,method="BH"){
   df_result_1 <- c()
   for (pre in unique(df_result$predict_spot)) {
     cell <- df_result$cell[which(df_result$predict_spot == pre)]
-    HallMakrer2 <- HallMakrer[which(HallMakrer$ref_type1 == pre),c("ref_type2","makrer")]
-    gene_stat <- data.frame(table(HallMakrer2$ref_type2))
-    HallMakrer2 <- subset(HallMakrer2,ref_type2 %in% gene_stat$Var1[which(gene_stat$Freq >3 )])
-    HallMakrer2 <- subset(HallMakrer2,ref_type2 != "Others")
+    HallMarker2 <- HallMarker[which(HallMarker$ref_type1 == pre),c("ref_type2","makrer")]
+    gene_stat <- data.frame(table(HallMarker2$ref_type2))
+    HallMarker2 <- subset(HallMarker2,ref_type2 %in% gene_stat$Var1[which(gene_stat$Freq >3 )])
+    HallMarker2 <- subset(HallMarker2,ref_type2 != "Others")
 
-    if (is.null(dim(HallMakrer2))) {
+    if (is.null(dim(HallMarker2))) {
       print("your table of sub type markers is null")
     }else{
       for (len in 1:length(test_gene)) {
@@ -111,10 +111,10 @@ SSEA_score_normal <- function(HallMakrer,test_gene,population_size,method="BH"){
           p_stat <- c()
           DEGMarkers_sub <- as.data.frame(DEGMarkers[,clu])
           size_B <- dim(DEGMarkers_sub)[1]
-          for (ref in unique(HallMakrer2$ref_type2)) {
-            HallMakrer_sub <- subset(HallMakrer2,ref_type2 == ref)
-            size_A <- dim(HallMakrer_sub)[1]
-            size_C <- length(intersect(DEGMarkers_sub[,1],HallMakrer_sub$makrer))
+          for (ref in unique(HallMarker2$ref_type2)) {
+            HallMarker_sub <- subset(HallMarker2,ref_type2 == ref)
+            size_A <- dim(HallMarker_sub)[1]
+            size_C <- length(intersect(DEGMarkers_sub[,1],HallMarker_sub$makrer))
             p_value=phyper(size_C-1, size_A, population_size-size_A, size_B, lower.tail=F)
             stat <- data.frame(test=colnames(DEGMarkers)[clu],ref=ref,intersect_num=size_C,p_val=p_value)
             p_stat <- rbind(p_stat,stat)
