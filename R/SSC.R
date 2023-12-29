@@ -67,28 +67,5 @@ SSC <- function(obj,json_path,spot.size=65){
   # Circle plot
   cellchat <- CellChat::netAnalysis_computeCentrality(cellchat, slot.name = "netP")
 
-  for (i in pathways.show) {
-    pdf(paste0(i,"_circle.pdf"),width = 6,height = 6)
-    p1 <- CellChat::netVisual_aggregate(cellchat, signaling = i, layout = "circle")
-    print(p1)
-    dev.off()
-
-    pdf(paste0(i,"_spatial.pdf"),width = 10,height = 10)
-    p1 <- CellChat::netVisual_aggregate(cellchat, signaling = i, layout = "spatial", edge.width.max = 2, vertex.size.max = 1, alpha.image = 0.2, vertex.label.cex = 3.5)
-    print(p1)
-    dev.off()
-
-
-    pdf(paste0(i,"_outgoing_network.pdf"),width = 10,height = 10)
-    p1 <- CellChat::netVisual_aggregate(cellchat, signaling = i, layout = "spatial",
-                              edge.width.max = 2, alpha.image = 0.5, vertex.weight = "outgoing", vertex.size.max = 3.5, vertex.label.cex = 3.5)
-    print(p1)
-    dev.off()
-    pdf(paste0(i,"_incoming_network.pdf"),width = 10,height = 10)
-    p2 <- CellChat::netVisual_aggregate(cellchat, signaling = i, layout = "spatial",
-                              edge.width.max = 2, alpha.image = 0.5, vertex.weight = "incoming", vertex.size.max = 3.5, vertex.label.cex = 3.5)
-    print(p2)
-    dev.off()
-  }
   return(cellchat)
 }
