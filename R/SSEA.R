@@ -30,8 +30,8 @@ SSEA <- function(obj_list,num_list,cancer=cancer,population_size,method="BH"){
   }
   openxlsx::saveWorkbook(wb,paste0(cancer,"_topgene.xlsx"),overwrite = TRUE)
 
-    HallMakrer <- cancer_list
-    pred <- SSEA_score_cancer(HallMakrer,test_gene,population_size,method=method)
+    HallMarker <- cancer_list
+    pred <- SSEA_score_cancer(HallMarker,test_gene,population_size,method=method)
     cancer_df <- pred[[2]]
     meta <- merge(meta,cancer_df,"cell")
     predict_table <- data.frame(table(meta$cluster,meta$predict_spot))
@@ -73,8 +73,8 @@ SSEA <- function(obj_list,num_list,cancer=cancer,population_size,method="BH"){
     openxlsx::saveWorkbook(wb,paste0("normal","_topgene.xlsx"),overwrite = TRUE)
     method=method
 
-    HallMakrer <- immune_list
-    pred1 <- SSEA_score_normal(HallMakrer,test_gene,population_size,method=method)
+    HallMarker <- immune_list
+    pred1 <- SSEA_score_normal(HallMarker,test_gene,population_size,method=method)
     normal_df <- pred1[[2]]
     normal_df1 <- pred1[[4]]
     normal_df <- merge(normal_df,normal_df1,"cell")
