@@ -65,6 +65,9 @@ anno_obj <- pred_obj[[9]]
 Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5,label = TRUE,label.size =2,group.by = "predict_spot")
 Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5,label = TRUE,label.size =2,group.by = "predict_spot_sub")
 Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5,label = TRUE,label.size =2,group.by = "predict_cluster")
+
+anno_obj_cancer <- subset(anno_obj,type == "colon cancer")
+Seurat::SpatialDimPlot(anno_obj_cancer, pt.size = 1.5,label = TRUE,label.size =2,group.by = "predict_spot")
 ```
 
 Construct Spot-Spot Communication Network on spatial transcriptomic data using `CellChat`.
