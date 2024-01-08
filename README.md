@@ -33,41 +33,41 @@ if (!requireNamespace("CellChat", quietly = TRUE)) {
 Installing `DrSpace` from GitHub.
 
 ```r
-if (!requireNamespace("CellChat", quietly = TRUE)) { 
+if (!requireNamespace("DrSpace", quietly = TRUE)) { 
     devtools::install_github("QianChwnLyn/DrSpace")
 }
 ```
 
 #### 3. Usage
 
-Example data can be downloaded [here](https://github.com/QianChwnLyn/DrSpace/tree/main/data). Make sure to complete the images and clusters for the empty revolving data.
+Example data can be downloaded [here](https://github.com/QianChwnLyn/DrSpace/tree/main/data). Make sure the data contains spatial images information and clusters columns.
 
 ```R
 library(DrSpace)
 library(Seurat)
 load("obj.rda")
-Seurat::SpatialDimPlot(obj, pt.size = 1.5,label = TRUE,label.size =3 )
+Seurat::SpatialDimPlot(obj, pt.size = 1.5, label = TRUE, label.size =3)
 ```
 
 Predict disease data using `Copykat`.
 
 ```r
-copy_obj <- Copykat(obj = obj,cancer = "colon cancer",n_PC = 10,genome = "hg20")
-Seurat::SpatialDimPlot(copy_obj[[1]], pt.size = 1.5,label = TRUE,label.size =2,group.by = "type")
+copy_obj <- Copykat(obj = obj, cancer = "colon cancer", n_PC = 10, genome = "hg20")
+Seurat::SpatialDimPlot(copy_obj[[1]], pt.size = 1.5, label = TRUE, label.size =2, group.by = "type")
 ```
 
-Perform cell type enrichment analysis and predicted cell types on spatial transcriptomic data using `SSEA`.
+Perform cell type enrichment analysis and predict cell types on spatial transcriptomic data using `SSEA`.
 
 ```r
 num_list <- seq(100,1000,100)
 pred_obj <- SSEA(obj_list = copy_obj, num_list, cancer = "colon cancer", population_size = 20000)
 anno_obj <- pred_obj[[9]]
-Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5,label = TRUE,label.size =2,group.by = "predict_spot")
-Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5,label = TRUE,label.size =2,group.by = "predict_spot_sub")
-Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5,label = TRUE,label.size =2,group.by = "predict_cluster")
+Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5, label = TRUE,label.size =2, group.by = "predict_spot")
+Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5, label = TRUE,label.size =2, group.by = "predict_spot_sub")
+Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5, label = TRUE,label.size =2, group.by = "predict_cluster")
 
 anno_obj_cancer <- subset(anno_obj,type == "colon cancer")
-Seurat::SpatialDimPlot(anno_obj_cancer, pt.size = 1.5,label = TRUE,label.size =2,group.by = "predict_spot")
+Seurat::SpatialDimPlot(anno_obj_cancer, pt.size = 1.5, label = TRUE, label.size =2, group.by = "predict_spot")
 ```
 
 Construct Spot-Spot Communication Network on spatial transcriptomic data using `CellChat`.
