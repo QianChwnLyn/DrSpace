@@ -46,14 +46,14 @@ Example data can be downloaded [here](https://github.com/QianChwnLyn/DrSpace/tre
 library(DrSpace)
 library(Seurat)
 load("obj.rda")
-Seurat::SpatialDimPlot(obj, pt.size = 1.5, label = TRUE, label.size =3)
+Seurat::SpatialDimPlot(obj, pt.size = 1.5, label = TRUE, label.size = 3)
 ```
 
 Predict disease data using `Copykat`.
 
 ```r
 copy_obj <- Copykat(obj = obj, cancer = "colon cancer", n_PC = 10, genome = "hg20")
-Seurat::SpatialDimPlot(copy_obj[[1]], pt.size = 1.5, label = TRUE, label.size =2, group.by = "type")
+Seurat::SpatialDimPlot(copy_obj[[1]], pt.size = 1.5, label = TRUE, label.size = 2, group.by = "type")
 ```
 
 Perform cell type enrichment analysis and predict cell types on spatial transcriptomic data using `SSEA`.
@@ -67,7 +67,7 @@ Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5, label = TRUE,label.size =2, grou
 Seurat::SpatialDimPlot(anno_obj, pt.size = 1.5, label = TRUE,label.size =2, group.by = "predict_cluster")
 
 anno_obj_cancer <- subset(anno_obj,type == "colon cancer")
-Seurat::SpatialDimPlot(anno_obj_cancer, pt.size = 1.5, label = TRUE, label.size =2, group.by = "predict_spot")
+Seurat::SpatialDimPlot(anno_obj_cancer, pt.size = 1.5, label = TRUE, label.size = 2, group.by = "predict_spot")
 ```
 
 Construct Spot-Spot Communication Network on spatial transcriptomic data using `CellChat`.
