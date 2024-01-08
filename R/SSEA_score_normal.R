@@ -11,16 +11,16 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{pred <- SSEA_score_normal(HallMarker,test_gene,20000)}
-SSEA_score_normal <- function(HallMarker,test_gene,population_size,method="BH"){
-  colnames(HallMarker) <- c("ref_type1","ref_type2","makrer")
+#' \dontrun{pred <- SSEA_score_normal(HallMarker, test_gene, 20000)}
+SSEA_score_normal <- function(HallMarker, test_gene, population_size, method = "BH"){
+  colnames(HallMarker) <- c("ref_type1", "ref_type2", "makrer")
   SSEA_list <- list()
 
   ####CT1 anno
   result_df <- c()
-  HallMarker1 <- unique(HallMarker[,c("ref_type1","makrer")])
+  HallMarker1 <- unique(HallMarker[,c("ref_type1", "makrer")])
   gene_stat <- data.frame(table(HallMarker1$ref_type1))
-  HallMarker1 <- subset(HallMarker1,ref_type1 %in% gene_stat$Var1[which(gene_stat$Freq >5 )])
+  HallMarker1 <- subset(HallMarker1, ref_type1 %in% gene_stat$Var1[which(gene_stat$Freq >5 )])
 
   for (len in 1:length(test_gene)) {
     DEGMarkers <- test_gene[[len]]
@@ -30,22 +30,22 @@ SSEA_score_normal <- function(HallMarker,test_gene,population_size,method="BH"){
       DEGMarkers_sub <- as.data.frame(DEGMarkers[,clu])
       size_B <- dim(DEGMarkers_sub)[1]
       for (ref in unique(HallMarker1$ref_type1)) {
-        HallMarker_sub <- subset(HallMarker1,ref_type1 == ref)
+        HallMarker_sub <- subset(HallMarker1, ref_type1 == ref)
         size_A <- dim(HallMarker_sub)[1]
-        size_C <- length(intersect(DEGMarkers_sub[,1],HallMarker_sub$makrer))
+        size_C <- length(intersect(DEGMarkers_sub[,1], HallMarker_sub$makrer))
         p_value=phyper(size_C-1, size_A, population_size-size_A, size_B, lower.tail=F)
-        stat <- data.frame(test=colnames(DEGMarkers)[clu],ref=ref,intersect_num=size_C,p_val=p_value)
-        p_stat <- rbind(p_stat,stat)
+        stat <- data.frame(test = colnames(DEGMarkers)[clu], ref = ref, intersect_num = size_C, p_val = p_value)
+        p_stat <- rbind(p_stat, stat)
       }
-      padj_stat <- rbind(padj_stat,p_stat)
+      padj_stat <- rbind(padj_stat, p_stat)
     }
     set.seed(123)
-    padj_stat$p_val_adj <- p.adjust(padj_stat$p_val,method = method)
-    #SSEA_list[[paste0(names(test_gene)[len],"_padj_stat")]] <- padj_stat
+    padj_stat$p_val_adj <- p.adjust(padj_stat$p_val, method = method)
+    #SSEA_list[[paste0(names(test_gene)[len], "_padj_stat")]] <- padj_stat
 
-    padj_stat1 <- padj_stat[,c("test","ref","p_val_adj")]
+    padj_stat1 <- padj_stat[,c("test", "ref", "p_val_adj")]
     colnames(padj_stat1)[3] <- "value"
-    padj_stat_mat <- as.matrix(reshape2::dcast(padj_stat1,test~ref))
+    padj_stat_mat <- as.matrix(reshape2::dcast(padj_stat1, test~ref))
     rownames(padj_stat_mat) <- padj_stat_mat[,1]
     padj_stat_mat <- padj_stat_mat[,-1]
 
@@ -56,8 +56,8 @@ SSEA_score_normal <- function(HallMarker,test_gene,population_size,method="BH"){
       pre_padj_stat$type <- rownames(pre_padj_stat)
       pre_padj_stat[,1] <- as.numeric(pre_padj_stat[,1])
       pre_padj_stat <- pre_padj_stat[order(pre_padj_stat[,1]),]
-      min_cols <- data.frame(spot=rownames(padj_stat_mat)[i],p.adj=pre_padj_stat[1,1],predict_type=pre_padj_stat[1,2],top=names(test_gene)[len])
-      result_df <- rbind(result_df,min_cols)
+      min_cols <- data.frame(spot = rownames(padj_stat_mat)[i], p.adj = pre_padj_stat[1,1], predict_type = pre_padj_stat[1,2], top = names(test_gene)[len])
+      result_df <- rbind(result_df, min_cols)
     }
 
 
@@ -65,22 +65,22 @@ SSEA_score_normal <- function(HallMarker,test_gene,population_size,method="BH"){
   SSEA_list[["predict_df"]] <- as.data.frame(result_df)
   df_result <- c()
   for (i in unique(result_df$spot)) {
-    df1 <- subset(result_df,spot==i)
-    df_frame <- data.frame(cell=i,predict_spot=names(table(df1$predict_type))[which(table(df1$predict_type) == max(table(df1$predict_type)))])
+    df1 <- subset(result_df, spot == i)
+    df_frame <- data.frame(cell = i,predict_spot = names(table(df1$predict_type))[which(table(df1$predict_type) == max(table(df1$predict_type)))])
     if (dim(df_frame)[1] > 1) {
-      df_frame_fil <- subset(df1,predict_type %in% unique(df_frame$predict))
-      df_frame <- data.frame(cell=i,predict_spot=df_frame_fil$predict_type[which.min(df_frame_fil$p.adj)],padj=df_frame_fil$p.adj[which.min(df_frame_fil$p.adj)])
+      df_frame_fil <- subset(df1, predict_type %in% unique(df_frame$predict))
+      df_frame <- data.frame(cell = i, predict_spot = df_frame_fil$predict_type[which.min(df_frame_fil$p.adj)], padj = df_frame_fil$p.adj[which.min(df_frame_fil$p.adj)])
       if (df_frame$padj < 0.05) {
         df_frame <- df_frame[,c("cell","predict_spot")]
-        df_result <- rbind(df_result,df_frame)
-      }else{df_frame <- data.frame(cell=i,predict_spot="Others")
+        df_result <- rbind(df_result, df_frame)
+      }else{df_frame <- data.frame(cell = i, predict_spot = "Others")
       df_result <- rbind(df_result,df_frame)}
 
-    }else{df_frame_fil <- subset(df1,predict_type %in% unique(df_frame$predict))
+    }else{df_frame_fil <- subset(df1, predict_type %in% unique(df_frame$predict))
     if (min(df_frame_fil$p.adj) < 0.05) {
-      df_result <- rbind(df_result,df_frame)
-    }else{df_frame <- data.frame(cell=i,predict_spot="Others")
-    df_result <- rbind(df_result,df_frame)}
+      df_result <- rbind(df_result, df_frame)
+    }else{df_frame <- data.frame(cell = i, predict_spot = "Others")
+    df_result <- rbind(df_result, df_frame)}
     }}
   SSEA_list[["predict_spot"]] <- as.data.frame(df_result)
 
@@ -112,22 +112,22 @@ SSEA_score_normal <- function(HallMarker,test_gene,population_size,method="BH"){
           DEGMarkers_sub <- as.data.frame(DEGMarkers[,clu])
           size_B <- dim(DEGMarkers_sub)[1]
           for (ref in unique(HallMarker2$ref_type2)) {
-            HallMarker_sub <- subset(HallMarker2,ref_type2 == ref)
+            HallMarker_sub <- subset(HallMarker2, ref_type2 == ref)
             size_A <- dim(HallMarker_sub)[1]
-            size_C <- length(intersect(DEGMarkers_sub[,1],HallMarker_sub$makrer))
+            size_C <- length(intersect(DEGMarkers_sub[,1], HallMarker_sub$makrer))
             p_value=phyper(size_C-1, size_A, population_size-size_A, size_B, lower.tail=F)
-            stat <- data.frame(test=colnames(DEGMarkers)[clu],ref=ref,intersect_num=size_C,p_val=p_value)
-            p_stat <- rbind(p_stat,stat)
+            stat <- data.frame(test = colnames(DEGMarkers)[clu], ref = ref, intersect_num = size_C, p_val = p_value)
+            p_stat <- rbind(p_stat, stat)
           }
-          padj_stat <- rbind(padj_stat,p_stat)
+          padj_stat <- rbind(padj_stat, p_stat)
         }
         set.seed(123)
-        padj_stat$p_val_adj <- p.adjust(padj_stat$p_val,method = method)
-        #SSEA_list[[paste0(names(test_gene)[len],"_padj_stat")]] <- padj_stat
+        padj_stat$p_val_adj <- p.adjust(padj_stat$p_val, method = method)
+        #SSEA_list[[paste0(names(test_gene)[len], "_padj_stat")]] <- padj_stat
 
         padj_stat1 <- padj_stat[,c("test","ref","p_val_adj")]
         colnames(padj_stat1)[3] <- "value"
-        padj_stat_mat <- as.matrix(reshape2::dcast(padj_stat1,test~ref))
+        padj_stat_mat <- as.matrix(reshape2::dcast(padj_stat1, test~ref))
         if (dim(padj_stat_mat)[1] > 1) {
           rownames(padj_stat_mat) <- padj_stat_mat[,1]
           padj_stat_mat <- padj_stat_mat[,-1]
@@ -144,28 +144,28 @@ SSEA_score_normal <- function(HallMarker,test_gene,population_size,method="BH"){
           pre_padj_stat$type <- rownames(pre_padj_stat)
           pre_padj_stat[,1] <- as.numeric(pre_padj_stat[,1])
           pre_padj_stat <- pre_padj_stat[order(pre_padj_stat[,1]),]
-          min_cols <- data.frame(spot=rownames(padj_stat_mat)[i],p.adj=pre_padj_stat[1,1],predict_type=pre_padj_stat[1,2],top=names(test_gene)[len])
+          min_cols <- data.frame(spot = rownames(padj_stat_mat)[i], p.adj = pre_padj_stat[1,1], predict_type = pre_padj_stat[1,2], top = names(test_gene)[len])
           result_df_1 <- rbind(result_df_1,min_cols)
         }
       }
     }
   }
   for (i in unique(result_df_1$spot)) {
-    df1 <- subset(result_df_1,spot==i)
-    df_frame <- data.frame(cell=i,predict_spot_sub=names(table(df1$predict_type))[which(table(df1$predict_type) == max(table(df1$predict_type)))])
+    df1 <- subset(result_df_1, spot == i)
+    df_frame <- data.frame(cell = i, predict_spot_sub = names(table(df1$predict_type))[which(table(df1$predict_type) == max(table(df1$predict_type)))])
     if (dim(df_frame)[1] > 1) {
       df_frame_fil <- subset(df1,predict_type %in% unique(df_frame$predict))
-      df_frame <- data.frame(cell=i,predict_spot_sub=df_frame_fil$predict_type[which.min(df_frame_fil$p.adj)],padj=df_frame_fil$p.adj[which.min(df_frame_fil$p.adj)])
+      df_frame <- data.frame(cell = i, predict_spot_sub = df_frame_fil$predict_type[which.min(df_frame_fil$p.adj)], padj = df_frame_fil$p.adj[which.min(df_frame_fil$p.adj)])
       if (df_frame$padj < 0.05) {
         df_frame <- df_frame[,c("cell","predict_spot_sub")]
-        df_result_1 <- rbind(df_result_1,df_frame)
-      }else{df_frame <- data.frame(cell=i,predict_spot_sub="Others")
+        df_result_1 <- rbind(df_result_1, df_frame)
+      }else{df_frame <- data.frame(cell = i, predict_spot_sub = "Others")
       df_result_1 <- rbind(df_result_1,df_frame)}
 
-    }else{df_frame_fil <- subset(df1,predict_type %in% unique(df_frame$predict))
+    }else{df_frame_fil <- subset(df1, predict_type %in% unique(df_frame$predict))
     if (min(df_frame_fil$p.adj) < 0.05) {
-      df_result_1 <- rbind(df_result_1,df_frame)
-    }else{df_frame <- data.frame(cell=i,predict_spot_sub="Others")
+      df_result_1 <- rbind(df_result_1, df_frame)
+    }else{df_frame <- data.frame(cell = i, predict_spot_sub = "Others")
     df_result_1 <- rbind(df_result_1,df_frame)}
     }}
 
