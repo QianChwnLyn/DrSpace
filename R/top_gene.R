@@ -9,8 +9,8 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{top_gene(mat,num_list)}
-top_gene <- function(mat,n){
+#' \dontrun{top_gene(mat, num_list)}
+top_gene <- function(mat, n){
   gene_top_list <- list()
   for (num in n) {
     matr <- as.data.frame(mat[,1])
@@ -29,7 +29,7 @@ top_gene <- function(mat,n){
       gene_table <- cbind(gene_table,gene)
     }
     gene_top_list[[paste0("top_",num)]] <- gene_table
-    #write.table(gene_table,paste0("top_",n,"_gene.txt"),quote = F,sep = "\t",row.names = F)
+    #write.table(gene_table,paste0("top_", n, "_gene.txt"),quote = F,sep = "\t",row.names = F)
   }
   return(gene_top_list)
 }
